@@ -27,9 +27,8 @@ jobs:
       
       - name: Start web server in background
         run: |
-          npm install -g http-server
-          http-server -p 8000 &
-          sleep 5  # Give the server time to start
+          npx http-server -p 8000 &
+          sleep 10  # Give the server more time to start
       
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
@@ -37,7 +36,7 @@ jobs:
           browser: chrome
           headed: false
           wait-on: 'http://localhost:8000'
-          wait-on-timeout: 30
+          wait-on-timeout: 60
       
       - name: Upload screenshots on failure
         uses: actions/upload-artifact@v3

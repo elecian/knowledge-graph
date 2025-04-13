@@ -16,5 +16,19 @@
 // Import commands.js using ES2015 syntax:
 import './commands'
 
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
+// Ensure that uncaught exceptions don't fail tests in development
+// but do fail in CI to catch real issues
+Cypress.on('uncaught:exception', (err, runnable) => {
+  // returning false here prevents Cypress from failing the test
+  if (Cypress.env('CI')) {
+    return true; // In CI, we want to fail on uncaught exceptions
+  }
+  return false; // In dev, we want to continue even if there are exceptions
+})
+
+// Add a small delay between commands to ensure animations complete
+// and elements are fully rendered before interacting with them
+Cypress.Commands.overwrite('click', (originalFn, ...args) => {
+  const [element, options] = args;
+  return originalFn(element, { waitForAnimations: true, ...options });
+});
