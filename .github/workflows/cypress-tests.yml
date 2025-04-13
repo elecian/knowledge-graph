@@ -3,20 +3,13 @@ name: Knowledge Graph E2E Tests
 on:
   push:
     branches: [ main, master ]
-    paths:
-      - 'knowledge-graph/**'
   pull_request:
     branches: [ main, master ]
-    paths:
-      - 'knowledge-graph/**'
   workflow_dispatch:  # Allows manual triggering
 
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: knowledge-graph
     
     steps:
       - name: Checkout repository
@@ -27,7 +20,7 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-          cache-dependency-path: knowledge-graph/package.json
+          cache-dependency-path: package.json
       
       - name: Install dependencies
         run: npm ci || npm install
@@ -41,7 +34,6 @@ jobs:
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
-          working-directory: knowledge-graph
           browser: chrome
           headed: false
           wait-on: 'http://localhost:8000'
@@ -52,7 +44,7 @@ jobs:
         if: failure()
         with:
           name: cypress-screenshots
-          path: knowledge-graph/cypress/screenshots
+          path: cypress/screenshots
           if-no-files-found: ignore
       
       - name: Upload videos
@@ -60,5 +52,5 @@ jobs:
         if: always()
         with:
           name: cypress-videos
-          path: knowledge-graph/cypress/videos
+          path: cypress/videos
           if-no-files-found: ignore
