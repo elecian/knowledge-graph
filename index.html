@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Graph with D3.js</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 0 auto;
+            max-width: 1000px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        
+        svg {
+            display: block;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            background-color: white;
+        }
+        
+        .node {
+            cursor: pointer;
+            fill: white;
+            stroke: #000;
+            stroke-width: 2px;
+            transition: fill 0.3s;
+        }
+        
+        .node:hover {
+            fill: #f5f5f5;
+        }
+        
+        .node.selected {
+            fill: #f8d7d4;
+            stroke: #e74c3c;
+            filter: url(#space-glow);
+        }
+        
+        .link {
+            stroke: #3498db;
+            stroke-opacity: 0.6;
+            stroke-width: 1.5px;
+            stroke-dasharray: 5, 3;
+        }
+        
+        .node-label {
+            font-size: 12px;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #333;
+            font-weight: bold;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        /* Space aura animation */
+        @keyframes pulse {
+            0% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.2); }
+            100% { opacity: 0.7; transform: scale(1); }
+        }
+        
+        .space-aura {
+            fill: url(#space-gradient);
+            opacity: 0.7;
+            pointer-events: none;
+            animation: pulse 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Interactive Knowledge Graph</h1>
+        
+        <div class="controls">
+            <button id="resetButton">Reset View</button>
+            <button id="addNodeButton">Add Random Node</button>
+        </div>
+        
+        <svg width="900" height="600">
+            <defs>
+                <!-- Space-like glow effect -->
+                <filter id="space-glow" x="-50%" y="-50%" width="200%" height="200%">
+                    <!-- Outer cosmic glow -->
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur1" />
+                    <feColorMatrix in="blur1" type="matrix" values="0 0 0 0 0.2 0 0 0 0 0.4 0 0 0 0 0.8 0 0 0 1 0" result="coloredBlur1"/>
+                    
+                    <!-- Middle layer glow -->
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur2" />
+                    <feColorMatrix in="blur2" type="matrix" values="0 0 0 0 0.5 0 0 0 0 0.2 0 0 0 0 0.8 0 0 0 1 0" result="coloredBlur2"/>
+                    
+                    <!-- Inner glow -->
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur3" />
+                    <feColorMatrix in="blur3" type="matrix" values="0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0 0.9 0 0 0 1 0" result="coloredBlur3"/>
+                    
+                    <!-- Combine all layers -->
+                    <feMerge>
+                        <feMergeNode in="coloredBlur1"/>
+                        <feMergeNode in="coloredBlur2"/>
+                        <feMergeNode in="coloredBlur3"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+                
+                <!-- Pulsating animation -->
+                <radialGradient id="space-gradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                    <stop offset="0%" stop-color="rgba(100, 100, 255, 0.8)" />
+                    <stop offset="40%" stop-color="rgba(80, 80, 200, 0.6)" />
+                    <stop offset="100%" stop-color="rgba(50, 50, 150, 0)" />
+                </radialGradient>
+            </defs>
+        </svg>
+    </div>
+    
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
